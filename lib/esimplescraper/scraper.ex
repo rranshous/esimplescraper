@@ -40,19 +40,13 @@ defmodule Esimplescraper.Scraper do
   defp scrape_links([url|urls // []], root_url, result, scrapers)
   defp scrape_links([url|urls], root_url, result, scrapers) do
     if !Dict.has_key?(result, url) do
-      pid = spawn_scraper(url, root_url)
+      pid = spawn(Esimplescraper.PageScraper, :start, [])
+      pid <- { :scrape, url, root_url, self() }
       result = Dict.put result, url, pid
       scrapers = [pid|scrapers]
       scrape_links(urls, root_url, result, scrapers)
     else
       scrape_links(urls, root_url, result, scrapers)
     end
-  end
-
-  defp spawn_scraper(url, root_url) do
-    scraper_pid = spawn(Esimplescraper.PageScraper, :start, [])
-    # could spawn w/ args, making sure this works though
-    scraper_pid <- { :scrape, url, root_url, self() }
-    scraper_pid
   end
 end
