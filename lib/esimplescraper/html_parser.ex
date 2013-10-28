@@ -1,10 +1,12 @@
 defmodule Esimplescraper.HtmlParser do
 
+  import Esimplescraper.Utils, only: [pmap: 2]
+
   def parse_root_links(html, root_url) do
     if data_is_html?(html) do
       parse_links_from_html(html)
         |> Enum.filter(&(!non_html_link?(&1)))
-        |> Enum.map(&resolve_relative_links(&1, root_url))
+        |> pmap(&resolve_relative_links(&1, root_url))
         |> Enum.filter(&url_off_root?(&1, root_url))
         |> Enum.filter(&strip_extras/1)
     else
@@ -99,7 +101,6 @@ defmodule Esimplescraper.HtmlParser do
         end
       end
     end
-    IO.puts "FRRL: #{url} #{root_url}"
     url
   end
 
@@ -108,7 +109,6 @@ defmodule Esimplescraper.HtmlParser do
   end
 
   def strip_extras(url) do
-    [url|_] = String.split(url,"#")
-    url
+    Enum.first String.split(url,"#")
   end
 end
