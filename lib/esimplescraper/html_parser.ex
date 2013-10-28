@@ -6,6 +6,7 @@ defmodule Esimplescraper.HtmlParser do
         |> Enum.filter(&(!non_html_link?(&1)))
         |> Enum.map(&resolve_relative_links(&1, root_url))
         |> Enum.filter(&url_off_root?(&1, root_url))
+        |> Enum.filter(&strip_extras/1)
     else
       []
     end
@@ -95,10 +96,16 @@ defmodule Esimplescraper.HtmlParser do
         end
       end
     end
+    IO.puts "FRRL: #{url} #{root_url}"
     url
   end
 
   def non_html_link?(url) do
     String.starts_with?(url, "mailto:") or String.starts_with?(url, "tel:")
+  end
+
+  def strip_extras(url) do
+    [url|_] = String.split(url,"#")
+    url
   end
 end
