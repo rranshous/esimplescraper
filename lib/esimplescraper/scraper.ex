@@ -6,10 +6,13 @@ defmodule Esimplescraper.Scraper do
   import Esimplescraper.Requester, only: [get: 1]
 
   def scrape_site(root_url) do
+    if(!String.ends_with?(root_url, "/")) do
+      root_url = root_url <> "/"
+    end
     scrape_pages [root_url], root_url
   end
 
-  def scrape_pages(urls, root_url) do
+  defp scrape_pages(urls, root_url) do
     scrape_pages(urls, root_url, HashDict.new)
   end
 

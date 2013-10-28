@@ -78,20 +78,20 @@ defmodule Esimplescraper.HtmlParser do
 
   def resolve_relative_links(url, root_url) do
     if(String.starts_with?(url, "/")) do
-      if(String.ends_with?(root_url, "/")) do
-        url = String.slice(root_url, 0, String.length(root_url)-1) <> url
+      if(String.starts_with?(url, "/")) do
+        url = root_url <> String.slice(url, 1, String.length(url)-1)
       else
         url = root_url <> url
       end
     else
-      if(String.slice(url,0,4) != "http") do
-        if(String.at(url,0) == ".") do
-          url = String.slice(url,1,-1)
+      if(!String.starts_with?(url, "http")) do
+        if(String.starts_with?(url,"./")) do
+          url = String.slice(url,2,-1)
         end
         if(String.at(url,0) == "/") do
-          url = root_url <> url
+          url = root_url <> String.splice(url, 1)
         else
-          url = root_url <> "/" <> url
+          url = root_url <> url
         end
       end
     end
