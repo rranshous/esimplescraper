@@ -1,11 +1,12 @@
 defmodule Esimplescraper.HtmlParser do
 
   def parse_root_links(html, root_url) do
-    case data_is_html?(html) do
-      true -> parse_links_from_html(html)
-                |> Stream.map(&resolve_relative_links(&1, root_url))
-                |> Stream.filter(&url_off_root?(&1, root_url))
-      false -> []
+    if data_is_html?(html) do
+      parse_links_from_html(html)
+        |> Enum.map(&resolve_relative_links(&1, root_url))
+        |> Enum.filter(&url_off_root?(&1, root_url))
+    else
+      []
     end
   end
 
