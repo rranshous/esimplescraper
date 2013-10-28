@@ -87,7 +87,10 @@ defmodule Esimplescraper.HtmlParser do
     else
       if(!String.starts_with?(url, "http")) do
         if(String.starts_with?(url,"./")) do
-          url = String.slice(url,2,-1)
+          url = String.slice(url,2,String.length(url)-2)
+        end
+        if(String.starts_with?(url,"../")) do
+          url = String.slice(url,3,String.length(url)-3)
         end
         if(String.at(url,0) == "/") do
           url = root_url <> String.splice(url, 1)
