@@ -3,6 +3,7 @@ defmodule Esimplescraper.HtmlParser do
   def parse_root_links(html, root_url) do
     if data_is_html?(html) do
       parse_links_from_html(html)
+        |> Enum.filter(&(!non_html_link?(&1)))
         |> Enum.map(&resolve_relative_links(&1, root_url))
         |> Enum.filter(&url_off_root?(&1, root_url))
     else
@@ -95,5 +96,9 @@ defmodule Esimplescraper.HtmlParser do
       end
     end
     url
+  end
+
+  def non_html_link?(url) do
+    String.starts_with?(url, "mailto:") or String.starts_with?(url, "tel:")
   end
 end
